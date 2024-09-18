@@ -21,6 +21,7 @@ int main()
         app.clear(sf::Color::White);
         Korwin.Move();
         Korwin.ChangeWeapon(event);
+        Korwin.Walk(event);
        // Korwin.Gravity();
         app.draw(Ground);
         Korwin.draw(&app);
