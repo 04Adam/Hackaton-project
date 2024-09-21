@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include "Objects.h"
+#include <iostream>
 using namespace std;
+
 int main()
 {
     sf::RenderWindow app(sf::VideoMode(800, 600), "SFML window");
@@ -25,6 +27,7 @@ int main()
        // Korwin.Gravity();
         app.draw(Ground);
         Korwin.draw(&app);
+        Korwin.show();
         app.display();
     }
 

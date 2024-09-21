@@ -18,6 +18,8 @@ public:
     void Gravity();
     void ChangeWeapon(sf::Event event);
     void Walk(sf::Event event);
+    void show();
+
 };
 
 

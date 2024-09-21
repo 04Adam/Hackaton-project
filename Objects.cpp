@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "Objects.h"
+#include <iostream>
 KorwinClass::KorwinClass(){
     JumpPower = -100;
     korwin1_t.loadFromFile("Korwin1.png");
@@ -41,8 +42,11 @@ void KorwinClass::Move(){
         if(JumpPower <= -0.5){
             this -> Weapon == 0 ? this -> korwin_s.setTexture(this -> korwin1_t) : this -> korwin_s.setTexture(this -> korwin2_t);
             this -> JumpPower = -100;
+            this -> korwin_s.move(0,0.5);
         }
+
     }
+
 }
 void KorwinClass::draw(sf::RenderWindow *app){
     app->draw(korwin_s);
@@ -81,6 +85,9 @@ void KorwinClass::Walk(sf::Event event){
             this -> Weapon == 0 ? this -> korwin_s.setTexture(this -> korwin1_t) : this -> korwin_s.setTexture(this -> korwin2_t);
         }
     }
+}
+void KorwinClass::show(){
+    std::cout << this -> korwin_s.getPosition().y << '\n';
 }
 /*void KorwinClass::Gravity(){
     if(Jump && this -> korwin_s.getPosition().y < 50)
