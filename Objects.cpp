@@ -10,39 +10,50 @@ KorwinClass::KorwinClass(){
     korwinw3_t.loadFromFile("KorwinW3.png");
     korwin_s.setTexture(korwin1_t);
     korwin_s.setScale(2.5,2.5);
-    korwin_s.setPosition(0,150);
+    korwin_s.setPosition(0,200);
+    korwin_s.setOrigin({10,20});
+
     Weapon = false;
     Direction = true;
+    isRolling = false;
     WeaponCooldown = 0;
     WalkAnimation = 0;
+    RollingPhase = 0;
+    RollDir = 0;
 }
 void KorwinClass::Move(){
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+
+    // Walk right
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::D) && !isRolling){
         if(this -> Direction == 0){
             Direction = !Direction;
-            korwin_s.move(-45,0);
+            korwin_s.move(-10,0);
         }
         this -> korwin_s.setScale(2.5,2.5);
-        this -> korwin_s.move(0.1,0);
+        this -> korwin_s.move(0.3,0);
     }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
+    // Walk left
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A) && !isRolling){
         if(this -> Direction){
             Direction = !Direction;
-            korwin_s.move(45,0);
+            korwin_s.move(10,0);
         }
         this -> korwin_s.setScale(-2.5,2.5);
-        this -> korwin_s.move(-0.1,0);
+        this -> korwin_s.move(-0.3,0);
     }
-    if(this -> JumpPower == -100 && sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+
+    // Jumping script
+
+    if(this -> JumpPower == -100 && sf::Keyboard::isKeyPressed(sf::Keyboard::W)){
         this -> JumpPower = 0.5;
     }
     if(JumpPower >= -0.5){
-        this -> korwin_s.move(0,-JumpPower);
-        this -> JumpPower -= 0.001;
+        this -> korwin_s.move(0,-JumpPower*1.75);
+        this -> JumpPower -= 0.002;
         if(JumpPower <= -0.5){
             this -> Weapon == 0 ? this -> korwin_s.setTexture(this -> korwin1_t) : this -> korwin_s.setTexture(this -> korwin2_t);
             this -> JumpPower = -100;
-            this -> korwin_s.move(0,0.5);
+            this -> korwin_s.move(0,0.75);
         }
 
     }
@@ -68,8 +79,8 @@ void KorwinClass::ChangeWeapon(sf::Event event){
         this -> WeaponCooldown--;
 }
 void KorwinClass::Walk(sf::Event event){
-    if(JumpPower == -100){
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
+    if(JumpPower == -100 && !isRolling){
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::A) ){
             if(this -> WalkAnimation < 100)
                 this -> korwin_s.setTexture(this -> korwinw1_t);
             else if(this -> WalkAnimation >= 100 && this -> WalkAnimation < 200)
@@ -80,7 +91,7 @@ void KorwinClass::Walk(sf::Event event){
             this -> WalkAnimation %= 300;
 
         }
-        else if(event.type == sf::Event::KeyReleased && (event.key.code == sf::Keyboard::Right || event.key.code == sf::Keyboard::Left)){
+        else if(event.type == sf::Event::KeyReleased && (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::A)){
             this -> WalkAnimation = 0;
             this -> Weapon == 0 ? this -> korwin_s.setTexture(this -> korwin1_t) : this -> korwin_s.setTexture(this -> korwin2_t);
         }
@@ -88,6 +99,24 @@ void KorwinClass::Walk(sf::Event event){
 }
 void KorwinClass::show(){
     std::cout << this -> korwin_s.getPosition().y << '\n';
+}
+void KorwinClass::Roll(sf::Event event){
+    if(event.type == sf::Event::KeyPressed && (event.key.code == sf::Keyboard::Right || event.key.code == sf::Keyboard::Left) && !isRolling && JumpPower == -100){
+        isRolling = true;
+        if(event.key.code == sf::Keyboard::Right)
+            this -> RollDir = 1;
+        else if(event.key.code == sf::Keyboard::Left)
+            this -> RollDir = -1;
+    }
+    if(isRolling){
+        RollingPhase++;
+        this -> korwin_s.rotate(RollDir);
+        this -> korwin_s.move(double(this -> RollDir)/2,0);
+        if(RollingPhase >= 360){
+            RollingPhase = 0;
+            isRolling = false;
+        }
+    }
 }
 /*void KorwinClass::Gravity(){
     if(Jump && this -> korwin_s.getPosition().y < 50)

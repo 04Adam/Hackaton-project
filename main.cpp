@@ -11,6 +11,7 @@ int main()
     Ground.setFillColor(sf::Color::Green);
     KorwinClass Korwin;
     app.setKeyRepeatEnabled(true);
+    app.setFramerateLimit(1200);
     while (app.isOpen())
     {
 
@@ -24,6 +25,7 @@ int main()
         Korwin.Move();
         Korwin.ChangeWeapon(event);
         Korwin.Walk(event);
+        Korwin.Roll(event);
        // Korwin.Gravity();
         app.draw(Ground);
         Korwin.draw(&app);
